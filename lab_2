@@ -1,0 +1,101 @@
+//Дан целочисленный двумерный массив размера MxN, заполненный построчно случайными значениями в диапазоне от -99 до 99
+//Этот массив вывести на экран
+//Заменить исходный массив новым, в котором удален ее первый столбец, содержащий только положительные элементы
+//Получившийся массив вывести на экран
+//Если требуемого столбца нет, то вывести массив без изменений
+import java.util.Random;
+public class Main {
+    public static void main(String[] args) {
+        //Задаю размер матрицы стартовые
+        int N = 4;
+        int M = 3;
+        //Статический метод create создаёт матрицу размером n на m и заполняет ёё
+        //элементами от -99 до 99
+        int [][] matrix = create(N,M);
+        //выводим матрицу на экран
+        writeln(matrix);
+        //Модификация матрицы (удаление, если такой столбец есть, где только положительные элементы).
+        matrix = changeMatrix(matrix);
+        //Печатаю модифицированную матрицу или исходную, если менять не пришлось
+        writeln(matrix);
+    }
+    public static int[][] changeMatrix(int [][] m) {
+        //Узнаю номер столбца, который нужно удалить, если такого нет, то
+        //searchIsPositive вернёт -1
+        int indColToChange  = searchIsPositiveCol(m);
+
+        if(indColToChange == -1) {
+            //Если метод вернул -1, то возвращаю исходную матрицу
+            return m;
+        }
+        else {
+            //создаю новую пустую матрицу размером m на n-1
+            //Если столбец удаляю, то получившаяся на 1 столбец меньше
+            int[][] m_new = new int[m.length][m[0].length - 1];
+            //Перебираю индексы всех столбцов в исходной матрице
+            for(int j = 0; j < m[0].length; j++) {
+                //всех строк
+                for(int i = 0; i<m.length; i++) {
+                    //Если j меньше индекса столбца, который нужно заменить
+                    //то беру элемент из матрицы c индексами i и j
+                    if(j < indColToChange) {
+                        m_new[i][j] = m[i][j];
+                    }
+                    //Если j больше номера столбца, который нужно удалить, то
+                    else if(j > indColToChange) {
+                        //индекс столбца в новой матрице на 1 меньше исходного
+                        m_new[i][j-1] = m[i][j];
+                    }
+                }
+
+            }
+            // возвращаю новую матрицу
+            return m_new;
+        }
+
+    }
+    public static int searchIsPositiveCol(int [][] m) {
+        for(int j = 0; j<m[0].length; j++) {//номер столбца
+            //номер строки
+            int i = 0;
+            for(i = 0; i<m.length; i++) {
+                // Если в i ой строке в j ом столбце меньше 0, то прерываю цикл
+                if (m[i][j] <= 0) {
+                    break;
+                }
+            }
+            //Если i == количеству элементов в столбце, значит все элементы положительные
+            //значит этот столбец нужно удалить.
+            if(i == m.length ) {
+                return j;
+            }
+        }
+        //Если до этой строчки программа дошла, то ни одного столбца удалять не нужно
+        //возвращаю -1
+        return -1;
+    }
+    public static void writeln(int [][] m) {//вывод массива
+            System.out.println();
+            for (int i = 0; i < m.length; i++) {
+                for (int j = 0; j < m[i].length; j++)
+                    System.out.printf("%5d", m[i][j]);
+                System.out.println();
+
+            }
+        }
+
+    public static int[][] create(int n, int m) {//создание массива
+        int[][] matrix = new int[m][n];
+        Random random = new Random();
+        int i = 0;
+        while(i < matrix.length) {
+            int j = 0;
+            while(j < matrix[i].length) {
+                matrix[i][j] = random.nextInt(-99, 100); //
+                j++;
+            }
+            i++;
+        }
+        return matrix;
+    }
+}
